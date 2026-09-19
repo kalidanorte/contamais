@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>CONTAMAIS</title>
+<meta name="description" content="Agenda, registros e rotinas — MVP CONTAMAIS." />
+<meta name="theme-color" content="#241F17" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="stage">
+  <div class="frame">
+
+    <div class="topbar">
+      <h1 class="serif" id="screenTitle">CONTAMAIS</h1>
+      <button class="iconbtn" id="histBtn" aria-label="Histórico">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      </button>
+    </div>
+
+    <div class="content" id="content"></div>
+
+    <div class="tabbar">
+      <button class="tabbtn active" data-screen="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>Início</button>
+      <button class="tabbtn" data-screen="agenda"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</button>
+      <button class="tabbtn" data-screen="registros"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/></svg>Registros</button>
+      <button class="tabbtn" data-screen="rotinas"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Rotinas</button>
+    </div>
+
+    <div class="overlay" id="clientOverlay"><div class="sheet">
+      <div class="sheet-head"><h2 id="clientPanelTitle">Registro do cliente</h2>
+        <button class="iconbtn" onclick="closeOverlay('clientOverlay')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+      <div class="sheet-body" id="clientBody"></div>
+    </div></div>
+
+    <div class="overlay" id="clientFormOverlay"><div class="sheet">
+      <div class="sheet-head"><h2 id="clientFormTitle">Novo registro</h2>
+        <button class="iconbtn" onclick="closeOverlay('clientFormOverlay')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+      <div class="sheet-body" id="clientFormBody"></div>
+    </div></div>
+
+    <div class="overlay" id="histOverlay"><div class="sheet">
+      <div class="sheet-head"><h2>Histórico</h2>
+        <button class="iconbtn" onclick="closeOverlay('histOverlay')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+      <div class="sheet-body">
+        <div class="hist-filter" id="histFilter"></div>
+        <div id="histList"></div>
+      </div>
+    </div></div>
+
+    <div class="overlay" id="addBlockOverlay"><div class="sheet">
+      <div class="sheet-head"><h2>Novo bloco</h2>
+        <button class="iconbtn" onclick="closeOverlay('addBlockOverlay')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+      <div class="sheet-body">
+        <div id="blockConflictMsg"></div>
+        <div class="field"><label>Nome do bloco</label><input class="forminput" id="newBlockName" placeholder="Ex: Financeiro" /></div>
+        <div class="timerow">
+          <div class="field"><label>Início</label><input class="forminput" type="time" id="newBlockStart" value="09:00" /></div>
+          <div class="field"><label>Fim</label><input class="forminput" type="time" id="newBlockEnd" value="10:00" /></div>
+        </div>
+        <button class="save-btn" onclick="saveNewBlock()">Salvar bloco</button>
+      </div>
+    </div></div>
+
+    <div class="overlay" id="addCompromissoOverlay"><div class="sheet">
+      <div class="sheet-head"><h2>Novo compromisso</h2>
+        <button class="iconbtn" onclick="closeOverlay('addCompromissoOverlay')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+      <div class="sheet-body">
+        <div class="field"><label>Título</label><input class="forminput" id="compTitle" placeholder="Ex: Reunião sobre proposta" /></div>
+        <div class="timerow">
+          <div class="field"><label>Horário</label><input class="forminput" type="time" id="compTime" value="10:00" /></div>
+          <div class="field"><label>Duração</label><input class="forminput" id="compDuration" placeholder="Ex: 30 min" value="30 min" /></div>
+        </div>
+        <div class="field"><label>Bloco</label><select class="forminput" id="compBlock"></select></div>
+        <div class="field"><label>Cliente vinculado</label><select class="forminput" id="compClient"></select></div>
+        <button class="save-btn" onclick="saveNewCompromisso()">Salvar compromisso</button>
+      </div>
+    </div></div>
+
+    <div class="overlay" id="routineFormOverlay"><div class="sheet">
+      <div class="sheet-head"><h2 id="routineFormTitle">Nova rotina</h2>
+        <button class="iconbtn" onclick="closeOverlay('routineFormOverlay')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+      <div class="sheet-body" id="routineFormBody"></div>
+    </div></div>
+
+    <div class="overlay" id="moveOverlay"><div class="sheet">
+      <div class="sheet-head"><h2>Mover para outro dia</h2>
+        <button class="iconbtn" onclick="closeOverlay('moveOverlay')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+      <div class="sheet-body">
+        <div class="field"><label>Nova data</label><input class="forminput" type="date" id="moveTargetDate" /></div>
+        <button class="save-btn" onclick="confirmMove()">Confirmar</button>
+      </div>
+    </div></div>
+
+  </div>
+</div>
+<script src="app.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
